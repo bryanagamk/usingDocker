@@ -60,12 +60,12 @@ There is a lot of valuable output here, but it’s not exactly easy to parse. We
 --format argument (which takes a Go template 4 ) to filter for the information we’re interested in. 
 For example:
 ```shell
-     $ docker inspect stupefied_turing | grep IPAddress
-            "IPAddress": "172.17.0.4",
-            "SecondaryIPAddresses": null,
+    $ docker inspect stupefied_turing | grep IPAddress
+    "IPAddress": "172.17.0.4",
+    "SecondaryIPAddresses": null,
 
-        $ docker inspect --format {{.NetworkSettings.IPAddress}} stupefied_turing
-            172.17.0.4
+    $ docker inspect --format {{.NetworkSettings.IPAddress}} stupefied_turing
+    172.17.0.4
 ```    
 
 docker diff :
@@ -85,9 +85,9 @@ docker diff :
 Docker logs . If you run this command with the name of your container, you will get a list of everything that’s happened inside the container:
 ```shell
     $ docker logs stupefied_turing
-        root@CONTRAINER:/# mv /bin /basket
-        root@CONTRAINER:/# ls
-        bash: ls: command not found   
+    root@CONTRAINER:/# mv /bin /basket
+    root@CONTRAINER:/# ls
+    bash: ls: command not found   
 ```
 
 We’re finished with our broken container now, so let’s get rid of it. First, exit from the shell:
@@ -136,9 +136,9 @@ Give it a whirl!
 Let’s keep this container. 6 To turn it into an image, we can just use the docker commit command. To do this, we need to give the command the name of the container (“cowsay”) a name for the image (“cowsayimage”) and the name of the repository to store it in (“test”):
 ```shell
     root@cowsay:/# exit
-        exit
-        $ docker commit cowsay test/cowsayimage
-        d1795abbc71e14db39d24628ab335c58b0b45458060d1973af7acf113a0ce61d   
+    exit
+    $ docker commit cowsay test/cowsayimage
+    d1795abbc71e14db39d24628ab335c58b0b45458060d1973af7acf113a0ce61d   
 ```
 
 ## Building Images from Dockerfiles
