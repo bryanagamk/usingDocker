@@ -2,7 +2,7 @@
 
 ## Running Your First Image
 To test Docker is installed correctly, try running:
-`$ docker run debian echo "Bye World"`
+`   $ docker run debian echo "Bye World"`
 
 This may take a little while, depending on your Internet connection    
 We’ve called the docker run command, which is responsible for launching containers. The argument debian 
@@ -18,33 +18,33 @@ If you run the same command again, it will immediately launch the container with
 We can ask Docker to give us a shell inside a container with the following command:
 
 ```shell
-$ docker run -i -t debian /bin/bash
-root@622ac5689680:/# echo "Hello dari dalam Container"
-Hello dari dalam Container
-root@622ac5689680:/# exit
-exit
+    $ docker run -i -t debian /bin/bash
+    root@622ac5689680:/# echo "Hello dari dalam Container"
+    Hello dari dalam Container
+    root@622ac5689680:/# exit
+    exit
 ```
+
 ## The Basic Commands
 Let’s try to understand Docker a bit more by launching a container and seeing what effect various
 commands and actions have. 
 
 First, let’s launch a new container; but this time, we’ll give it a new hostname with the -h flag:
-`$ docker run -h CONTAINER -i -t debian /bin/bash`
-`root@CONTAINER:/#`
+`   $ docker run -h CONTAINER -i -t debian /bin/bash`
+`   root@CONTAINER:/#`
 
 Open a new terminal (leave the container session running), and try running docker ps from the host. 
 You will see something like this:
 ```shell
-        CONTAINER ID    IMAGE   COMMAND     ...     NAMES
-        00723499fdbf    debian  "/bin/bash" ...     stupefied_turing
+    CONTAINER ID    IMAGE   COMMAND     ...     NAMES
+    00723499fdbf    debian  "/bin/bash" ...     stupefied_turing
 ```
 
 This tells us a few details about all the currently running containers.
-
 We can get more information on a given container by runningdocker inspect with the name or ID of the 
 container:
 ```shell
-        $ docker inspect stupefied_turing
+    $ docker inspect stupefied_turing
         [
         {
             "Id": "00723499fdbfe55c14565dc53d61452519deac72e18a8a6fd7b371ccb75f1d91",
@@ -55,11 +55,12 @@ container:
             "Running": true,
         ...
 ```    
+
 There is a lot of valuable output here, but it’s not exactly easy to parse. We can use grep or the 
 --format argument (which takes a Go template 4 ) to filter for the information we’re interested in. 
 For example:
 ```shell
-        $ docker inspect stupefied_turing | grep IPAddress
+     $ docker inspect stupefied_turing | grep IPAddress
             "IPAddress": "172.17.0.4",
             "SecondaryIPAddresses": null,
 
@@ -69,7 +70,7 @@ For example:
 
 docker diff :
 ```shell
-        $ docker diff stupefied_turing
+    $ docker diff stupefied_turing
         C /.wh..wh.plnk
         A /.wh..wh.plnk/101.715484
         D /bin
@@ -78,45 +79,45 @@ docker diff :
         A /basket/cat
         A /basket/chacl
         A /basket/chgrp
-        ...
+        ...    
 ```
 
 Docker logs . If you run this command with the name of your container, you will get a list of everything that’s happened inside the container:
 ```shell
-        $ docker logs stupefied_turing
+    $ docker logs stupefied_turing
         root@CONTRAINER:/# mv /bin /basket
         root@CONTRAINER:/# ls
-        bash: ls: command not found
+        bash: ls: command not found   
 ```
 
 We’re finished with our broken container now, so let’s get rid of it. First, exit from the shell:
 ```shell
-        root@CONTRAINER:/# exit
-        exit
-        $
+    root@CONTRAINER:/# exit
+    exit
+    $    
 ```
     
 This will also stop the container, since the shell was the only running process. If you run docker ps , you should see there are no running containers. (officially called exited containers) To get rid of the container, use the docker rm command:
 ```shell
-        $ docker rm stupefied_turing
-        stupefied_turing
+    $ docker rm stupefied_turing
+    stupefied_turing    
 ```
 
 We’re going to create a Dockerized cowsay application
 ```shell
-        $ docker run -it --name cowsay --hostname cowsay debian bash
-        root@cowsay:/# apt-get update
+    $ docker run -it --name cowsay --hostname cowsay debian bash
+    root@cowsay:/# apt-get update
         ...
-        Reading package lists... Done
-        root@cowsay:/# apt-get install -y cowsay fortune
-        ...
-        root@cowsay:/#
+    Reading package lists... Done
+    root@cowsay:/# apt-get install -y cowsay fortune
+    ...
+    root@cowsay:/#    
 ```
     
 Give it a whirl!
 
 ```shell
-        root@cowsay:/# /usr/games/fortune | /usr/games/cowsay
+    root@cowsay:/# /usr/games/fortune | /usr/games/cowsay
         _____________________________________
         / Writing is easy; all you do is sit \
         | staring at the blank sheet of paper |
@@ -129,58 +130,58 @@ Give it a whirl!
          \  (oo)\_______
             (__)\        )\/\
                 ||----w  |
-                ||      ||
+                ||      ||    
 ```
    
 Let’s keep this container. 6 To turn it into an image, we can just use the docker commit command. To do this, we need to give the command the name of the container (“cowsay”) a name for the image (“cowsayimage”) and the name of the repository to store it in (“test”):
 ```shell
-        root@cowsay:/# exit
+    root@cowsay:/# exit
         exit
         $ docker commit cowsay test/cowsayimage
-        d1795abbc71e14db39d24628ab335c58b0b45458060d1973af7acf113a0ce61d
+        d1795abbc71e14db39d24628ab335c58b0b45458060d1973af7acf113a0ce61d   
 ```
 
 ## Building Images from Dockerfiles
 A Dockerfile is simply a text file that contains a set of steps that can be used to create
 a Docker image. Start by creating a new folder and file for this example:
  ```shell
-        $ mkdir cowsay
-        $ cd cowsay
-        $ touch Dockerfile
+    $ mkdir cowsay
+    $ cd cowsay
+    $ touch Dockerfile    
 ```
 
 And insert the following contents into Dockerfile:
 ```dockerfile
-        FROM debian:wheezy
-        RUN apt-get update && apt-get install -y cowsay fortune
+    FROM debian:wheezy
+    RUN apt-get update && apt-get install -y cowsay fortune    
 ```
 
 We can now build the image by running the docker build command inside the same directory:
 ```shell
-        $ ls
-        Dockerfile
-        $ docker build -t test/cowsay-dockerfile .
-        Sending build context to Docker daemon 2.048 kB
-        Step 0 : FROM debian:wheezy
-            ---> f6fab3b798be
-        Step 1 : RUN apt-get update && apt-get install -y cowsay fortune
-            ---> Running in 29c7bd4b0adc
-        ...
-        Setting up cowsay (3.03+dfsg1-4) ...
-            ---> dd66dc5a99bd
-        Removing intermediate container 29c7bd4b0adc
-        Successfully built dd66dc5a99bd
+    $ ls
+    Dockerfile
+    $ docker build -t test/cowsay-dockerfile .
+    Sending build context to Docker daemon 2.048 kB
+    Step 0 : FROM debian:wheezy
+        ---> f6fab3b798be
+    Step 1 : RUN apt-get update && apt-get install -y cowsay fortune
+        ---> Running in 29c7bd4b0adc
+    ...
+    Setting up cowsay (3.03+dfsg1-4) ...
+        ---> dd66dc5a99bd
+    Removing intermediate container 29c7bd4b0adc
+    Successfully built dd66dc5a99bd        
 ```
 
 Then we can run the image in the same way as before:
-`$ docker run test/cowsay-dockerfile /usr/games/cowsay "Moo"`
+`   $ docker run test/cowsay-dockerfile /usr/games/cowsay "Moo"`
 
 But we can actually make things a little bit easier for the user by taking advantage of 
 the ENTRYPOINT Dockerfile instruction. The ENTRYPOINT instruction lets us specify an
 executable that is used to handle any arguments passed to docker run .
     
 Add the following line to the bottom of the Dockerfile:
-`ENTRYPOINT ["/usr/games/cowsay"]`
+`   ENTRYPOINT ["/usr/games/cowsay"]`
 
     We can now rebuild and run the image without needing to specify the cowsay command:
 ```shell
@@ -196,12 +197,12 @@ ENTRYPOINT , which is a common pattern when creating Dockerfiles.
 Create a file entrypoint.sh with the following contents and save it in the same directory as the
 Dockerfile:
 ```bash
-        #!/bin/bash
-        if [ $# -eq 0 ]; then
-            /usr/games/fortune | /usr/games/cowsay
-        else
-            /usr/games/cowsay "$@"
-        fi
+    #!/bin/bash
+    if [ $# -eq 0 ]; then
+        /usr/games/fortune | /usr/games/cowsay
+    else
+        /usr/games/cowsay "$@"
+    fi 
 ```
     
 Set the file to be executable with chmod +x entrypoint.sh
@@ -209,17 +210,17 @@ Set the file to be executable with chmod +x entrypoint.sh
 We next need to modify the Dockerfile to add the script into the image and call it with the ENTRYPOINT
 instruction. Edit the Dockerfile so that it looks like:
 ``` dockerfile   
-        FROM debian
-        RUN apt-get update && apt-get install -y cowsay fortune
-        COPY entrypoint.sh /
-        ENTRYPOINT ["/entrypoint.sh"]
+    FROM debian
+    RUN apt-get update && apt-get install -y cowsay fortune
+    COPY entrypoint.sh /
+    ENTRYPOINT ["/entrypoint.sh"]   
 ```
     
     Try building a new image and running containers with and without arguments:
 ``` shell
-        $ docker build -t test/cowsay-dockerfile .
+    $ docker build -t test/cowsay-dockerfile .
         ...snip...
-        $ docker run test/cowsay-dockerfile
+    $ docker run test/cowsay-dockerfile
          ____________________________________
         / The last thing one knows in        \
         | constructing a work is what to put  |
@@ -231,7 +232,7 @@ instruction. Edit the Dockerfile so that it looks like:
              \  (oo)\_______
                 (__)\        )\/\
                     ||----w  |
-                    ||      ||
+                    ||      ||    
 ```
 
 ## Working with Registries
@@ -273,9 +274,9 @@ to use a repository name that starts with your username on the Docker Hub (in my
 case, bryanagamk ), followed by / and whatever name you want to give the image. For
 example:
 ```shell
-$ docker build -t bryanagamk/cowsay .
-...
-$ docker push bryanagamk/cowsay
+    $ docker build -t bryanagamk/cowsay .
+    ...
+    $ docker push bryanagamk/cowsay
 ```
 
 
