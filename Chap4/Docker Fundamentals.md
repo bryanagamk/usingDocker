@@ -306,15 +306,15 @@ This section gives a brief (at least in comparison to the official documentation
 ### The run Command
 We’ve already seen docker run in action; it’s the go-to command for launching new containers. As such, it is by far the most complex command and supports a large list of potential arguments. The arguments allow users to configure how the image is run, override Dockerfile settings, configure networking, and set privileges and resources for the container. The following options control the lifecycle of the container and its basic mode of operation:
 
--a, --attach
+* -a, --attach
     
     Attaches the given stream ( STDOUT , etc.) to the terminal. If unspecified, both stdout and stderr are attached. If unspecified and the container is started in interactive mode ( -i ), stdin is also attached. Incompatible with -d 
 
--d, --detach
+* -d, --detach
     
     Runs the container in “detached” mode. The command will run the container in the background and return the container ID.
 
--i, --interactive
+* -i, --interactive
     
     Keeps stdin open (even when it’s not attached). Generally used with -t to start an interactive container session. 
     For example:
@@ -323,15 +323,15 @@ We’ve already seen docker run in action; it’s the go-to command for launchin
         root@bd0f26f928bb:/# ls
         ...snip...
 
---restart
+* --restart
     
     Configures when Docker will attempt to restart an exited container. The argument no will never attempt to restart a container, and always will always try to restart, regardless of exit status. The on-failure argument will attempt to restart containers that exit with a nonzero status and can take an optional argument specifying the number of times to attempt to restart before giving up (if not specified, it will retry forever). For example, docker run --restart on-failure:10 postgres will launch the postgres container and attempt to restart it 10 times if it exits with a nonzero code.
 
---rm
+* --rm
     
     Automatically removes the container when it exits. Cannot be used with -d .
 
--t, --tty
+* -t, --tty
     
     Allocates a pseudo-TTY. Normally used with -i to start an interactive container. 
     
@@ -339,7 +339,7 @@ We’ve already seen docker run in action; it’s the go-to command for launchin
 The following options allow setting of container names and variables:
 
 
--e, --env
+* -e, --env
 
     Sets environment variables inside the container. 
     For example:
@@ -355,7 +355,7 @@ The following options allow setting of container names and variables:
 
     Also note the --env-file option for passing variables in via a file.
 
--h, --hostname
+* -h, --hostname
 
     Sets the container’s unix host name to NAME . 
     For example:
@@ -370,11 +370,11 @@ The following options allow setting of container names and variables:
 
 The following options allow the user to set up volumes:
 
--v, --volume
+* -v, --volume
     
     There are two forms of the argument to set up a volume (a file or directory within a container that is part of the native host filesystem, not the container’s union file system). The first form only specifies the directory within the container and will bind to a host directory of Docker’s choosing. The second form specifies the host directory to bind to.
 
---volumes-from
+* --volumes-from
     
     Mounts volumes from the specified container. Often used in association with data containers 
 
@@ -382,19 +382,19 @@ The following options allow the user to set up volumes:
 There are several options affecting networking. The basic commands you can expect to commonly use are:
 
 
---expose
+* --expose
 
     Equivalent of Dockerfile EXPOSE instruction. Identifies the port or port range as being used in the container but does not open the port. Only really makes sense in association with -P and when linking containers.
 
---link
+* --link
 
     Sets up a private network interface to the specified container.
 
--p, --publish
+* -p, --publish
 
     “Publishes” a port on the container, making it accessible from the host. If the host port is not defined, a random high-numbered port will chosen, which can be discovered by using the docker port command. The host interface on which to expose the port may also be specified.
 
--P, --publish-all
+* -P, --publish-all
 
     Publish all exposed ports on the container to the host. A random high-numbered port will be chosen for each exposed port. The docker port command can be used to see the mapping.
 
@@ -402,22 +402,22 @@ There are several options affecting networking. The basic commands you can expec
 The following options directly override Dockerfile settings:
 
 
---entrypoint
+* --entrypoint
 
     Sets the entrypoint for the container to the given argument, overriding any ENTRYPOINT instruction in the Dockerfile.
 
--u, --user
+* -u, --user
 
     Sets the user that commands are run under. May be specified as a username or UID. Overrides USER instruction in Dockerfile.
 
--w, --workdir
+* -w, --workdir
 
     Sets the working directory in the container to the provided path. Overrides any value in the Dockerfile.
 
 ### Managing Containers
 In addition to docker run , the following docker commands are used to manage containers during their lifecyle:
 
-docker attach [OPTIONS] CONTAINER
+* docker attach [OPTIONS] CONTAINER
 
     The attach command allows the user to view or interact with the main process inside the container. For example:
 
@@ -432,15 +432,15 @@ docker attach [OPTIONS] CONTAINER
     
     Note that using CTRL-C to quit will end the process and cause the container to exit.
 
-docker create
+* docker create
     
     Creates a container from an image but does not start it. Takes most of the same arguments as docker run . To start the container, use docker start .
 
-docker cp
+* docker cp
     
     Copies files and directories between a container and the host.
 
-docker exec
+* docker exec
     
     Runs a command inside a container. Can be used to perform maintenance tasks or as a replacement for ssh to log in to a container.
     For example:
@@ -457,7 +457,7 @@ docker exec
         exit
 ```
 
-docker kill
+* docker kill
     Sends a signal to the main process (PID 1) in a container. By default, sends a SIGKILL , which will cause the container to exit immediately. Alternatively, the signal can be specified with the -s argument. The container ID is returned. 
     For example:
 
@@ -472,15 +472,15 @@ docker kill
         e33da73c275b56e734a4bbbefc0b41f6ba84967d09ba08314edd860ebd2da86c
 ```
 
-docker pause
+* docker pause
 
     Suspends all processes inside the given container. The processes do not receive any signal that they are being suspended and consequently cannot shut down or clean up. The processes can be restarted with docker unpause . docker pause uses the Linux cgroups freezer functionality internally. This command contrasts with docker stop , which stops the processes and sends signals observable by the processes.
 
-docker restart
+* docker restart
 
     Restarts one or more containers. Roughly equivalent to calling docker stop followed by docker start on the containers. Takes an optional argument -t that specifies the amount of time to wait for the container to shut down before it is killed with a SIGTERM .
 
-docker rm
+* docker rm
 
     Removes one or more containers. Returns the names or IDs of succesfully deleted containers. By default, docker rm will not remove any volumes. The -f argument can be used to remove running containers, and the -v argument will remove volumes created by the container (as long as they aren’t bind mounted or in use by another container).
     For example, to delete all stopped containers:
@@ -492,34 +492,34 @@ docker rm
         f47074b60757
 ```
 
-docker start
+* docker start
 
     Starts a stopped container (or containers). Can be used to restart a container that has exited or to start a container that has been created with docker create but never launched.
 
-docker stop
+* docker stop
 
     Stops (but does not remove) one or more containers. After calling docker stop on a container, it will transition to the “exited” state. Takes an optional argument -t which specifies the amount of time to wait for the container to shutdown before it is killed with a SIGTERM .
 
-docker unpause
+* docker unpause
 
     Restarts a container previously paused with docker pause
 
- ### Docker Info
+### Docker Info
 The following subcommands can be used to get more information on the Docker installation and usage:
 
-docker info
+* docker info
 
     Prints various information on the Docker system and host.
 
-docker help
+* docker help
 
     Prints usage and help information for the given subcommand. Identical to running a command with the --help flag.
 
-docker version
+* docker version
 
     Prints Docker version information for client and server as well as the version of Go used in compilation. Container Info The following commands provide more information on running and stopped containers.
 
-docker diff
+* docker diff
 
     Shows changes made to the containers filesystem compared to the image it was launched from. For example:
 
@@ -529,19 +529,19 @@ docker diff
         A /NEW-FILE
 ```
 
-docker events
+* docker events
 
     Prints real-time events from the daemon. Use CTRL-C to quit.
 
-docker inspect
+* docker inspect
 
     Provides detailed information on given containers or images. The information includes most configuration information and covers network settings and volume mappings. The command can take one argument, -f , which is used to supply a Go template that can be used to format and filter the output.
 
-docker logs
+* docker logs
 
     Outputs the “logs” for a container. This is simply everything that has been written to STDERR or STDOUT inside the container.
 
-docker port
+* docker port
 
     Lists the exposed port mappings for the given container. Can optionally be given the internal container port and protocol to look up. Often used after docker run -P <image> to discover the assigned ports.
     For example:
@@ -556,11 +556,11 @@ docker port
         0.0.0.0:32768
 ```
 
-docker ps
+* docker ps
 
     Provides high-level information on current containers, such as the name, ID, and status. Takes a lot of different arguments, notably -a for getting all containers, not just running ones. Also note the -q argument, which only returns the container IDs and is very useful as input to other commands such as docker rm .
 
-docker top
+* docker top
 
     Provides information on the running processes inside a given container. In effect, this command runs the UNIX ps utility on the host and filters for processes in the given container. The command can be given the same arguments the ps utility and defaults to -ef (but be careful to make sure the PID field is still in the output).
     For example:
@@ -581,11 +581,11 @@ docker top
 ### Dealing with Images
 The following commands provide tools for creating and working with images:
 
-docker build
+* docker build
 
     Builds an image from a Dockerfile
 
-docker commit
+* docker commit
 
     Creates an image from the specified container. While docker commit can be useful, it is generally preferable to create images using docker build , which is easily repeatable. By default, containers are paused prior to commit, but this can be turned off with the --pause=false argument. Takes -a and -m arguments for setting metadata.
     For example:
@@ -601,11 +601,11 @@ docker commit
         /new-file
 ```
 
-docker export
+* docker export
 
     Exports the contents of the container’s filesystem as a tar archive on STDOUT . The resulting archive can be loaded with docker import . Note that only the filesystem is exported; any metadata such as exported ports, CMD , and ENTRYPOINT settings will be lost. Also note that any volumes are not inlcuded in the export. Contrast with docker save . docker history Outputs information on each of the layers in an image.
 
-docker images
+* docker images
 
     Provides a list of local images, including information such as repository name, tag name, and size. By default, intermediate images (used in the creation of toplevel images) are not shown. The VIRTUAL SIZE is the total size of the image including all underlying layers. As these layers may be shared with other images, simply adding up the size of all images does not provide an accurate estimate of disk usage. Also, images will appear multiple times if they have more than one tag; different images can be discerned by comparing the ID. Takes several arguments; in particular, note -q , which only returns the image IDs and is useful as input to other commands such as docker rmi .
     For example:
@@ -625,7 +625,7 @@ docker images
         Deleted: a9979d5ace9af55a562b8436ba66a1538357bc2e0e43765b406f2cf0388fe062
 ```
 
-docker import
+* docker import
 
     Creates an image from an archive file containing a filesystem, such as that created by docker export . The archive may be identified by a file path or URL or streamed through STDIN (by using the - flag). Returns the ID of the newly created image. The image can be tagged by supplying a repository and tag name. Note that an image built from import will only consist of a single layer and will lose Docker configuration settings such as exposed ports and CMD values. Contrast with docker load .
     Example of “flattening” an image by exporting and importing:
@@ -638,15 +638,15 @@ docker import
         981804b0c2b2 59 seconds ago 317.7 MB Imported from -
 ```
 
-docker load
+* docker load
 
     Loads a repository from a tar archive passed via STDIN . The repository may contain several images and tags. Unlike docker import , the images will include history and metadata. Suitable archive files are created by docker save , making save and load a viable alternative to registries for distributing images and producing backups. See docker save for an example.
 
-docker rmi
+* docker rmi
 
     Deletes the given image or images. Images are specified by ID or repository and tag name. If a repository name is supplied but no tag name, the tag is assumed to be latest . To delete images that exist in multiple repositories, specify that image by ID and use the -f argument. You will need to run this once per repository.
 
-docker save
+* docker save
 
     Saves the named images or repositories to a tar archive, which is streamed to STDOUT (use -o to write to a file). Images can be specified by ID or as repository:tag . If only a repository name is given, all images in that repository will be saved to the archive, not just the latest tag. Can be used in conjunction with docker load to distribute or back up images.
     For example:
@@ -664,7 +664,7 @@ docker save
         redis       latest  0f3059144681    3 months ago    111 MB
 ```
 
-docker tag
+* docker tag
 
     Associates a repository and tag name with an image. The image can identified by ID or repository and tag (the latest tag is assumed if none is given). If no tag is given for the new name, latest is assumed.
     For example:
@@ -684,22 +684,22 @@ docker tag
 ### Using the Registry
 The following commands relate to using registries, including the Docker Hub. Be aware the Docker saves credentials to the file .dockercfg in your home directory:
 
-docker login
+* docker login
 
     Register with, or log in to, the given registry server. If no server is specified, it is assumed to be the Docker Hub. The process will interactively ask for details if required, or they can be supplied as arguments
 
-docker logout
+* docker logout
 
     Logs out from a Docker registry. If no server is specified, it is assumed to be the Docker Hub.
 
-docker pull
+* docker pull
 
     Downloads the given image from a registry. The registry is determined by the image name and defaults to the Docker Hub. If no tag name is given, the image tagged latest will be downloaded (if available). Use the -a argument to download all images from a repository.
 
-docker push
+* docker push
 
     Pushes an image or repository to the registry. If no tag is given, this will push all images in the repository to the registry, not just the one marked latest .
 
-docker search
+* docker search
 
     Prints a list of public repositories on the Docker Hub matching the search term. Limits results to 25 repositories. You can also filter by stars and automated builds. In general, it’s easiest to use the website.
