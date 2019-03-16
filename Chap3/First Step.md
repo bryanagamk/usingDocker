@@ -216,7 +216,8 @@ instruction. Edit the Dockerfile so that it looks like:
     ENTRYPOINT ["/entrypoint.sh"]   
 ```
     
-    Try building a new image and running containers with and without arguments:
+Try building a new image and running containers with and without arguments:
+
 ``` shell
     $ docker build -t test/cowsay-dockerfile .
         ...snip...
